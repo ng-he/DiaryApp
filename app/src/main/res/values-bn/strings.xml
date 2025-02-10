@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Note</string>
+    <string name="how_about_you_today">আজ আপনার কেমন লাগছে?</string>
+    <string name="language">ভাষা</string>
+    <string name="feeling">অনুভূতি</string>
+    <string name="enter_title_here">এখানে শিরোনাম লিখুন</string>
+    <string name="enter_text_here">এখানে টেক্সট লিখুন</string>
+    <string name="wait">অপেক্ষা করুন!</string>
+    <string name="are_you_sure_you_want_to_delete">আপনি কি নিশ্চিত আপনি মুছতে চান?</string>
+    <string name="cancel">বাতিল</string>
+    <string name="delete">মুছুন</string>
+    <string name="permission">অনুমতি</string>
+    <string name="permission_message">
+        <![CDATA[
+            সঠিকভাবে অ্যাপ ব্যবহার করতে দয়া করে "<b>ছবির অ্যাক্সেস অনুমতি</b>" দিন
+        ]]>
+    </string>
+    <string name="access_photos_permission">ছবির অ্যাক্সেস অনুমতি</string>
+    <string name="permission_not_allowed">অনুমতি দেওয়া হয়নি।</string>
+    <string name="permission_allowed">অনুমতি দেওয়া হয়েছে।</string>
+    <string name="done">সমাপ্ত</string>
+    <string name="save">সংরক্ষণ</string>
+    <string name="english">ইংরেজি</string>
+    <string name="hindi">হিন্দি</string>
+    <string name="spanish">স্প্যানিশ</string>
+    <string name="french">ফরাসি</string>
+    <string name="arabic">আরবি</string>
+    <string name="bengali">বাংলা</string>
+    <string name="oops_the_diary_is_blank">ওহ, ডায়েরিটি ফাঁকা!</string>
+    <string name="select_date">"তারিখ নির্বাচন করুন</string>
+</resources>

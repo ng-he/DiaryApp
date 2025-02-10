@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Note</string>
+    <string name="how_about_you_today">كيف حالك اليوم؟</string>
+    <string name="language">اللغة</string>
+    <string name="feeling">الشعور</string>
+    <string name="enter_title_here">أدخل العنوان هنا</string>
+    <string name="enter_text_here">أدخل النص هنا</string>
+    <string name="wait">انتظر!</string>
+    <string name="are_you_sure_you_want_to_delete">هل أنت متأكد أنك تريد الحذف؟</string>
+    <string name="cancel">إلغاء</string>
+    <string name="delete">حذف</string>
+    <string name="permission">الإذن</string>
+    <string name="permission_message">
+        <![CDATA[
+            يرجى منح "<b>إذن الوصول إلى الصور</b>" لاستخدام التطبيق بشكل صحيح
+        ]]>
+    </string>
+    <string name="access_photos_permission">إذن الوصول إلى الصور</string>
+    <string name="permission_not_allowed">الإذن غير مسموح به.</string>
+    <string name="permission_allowed">الإذن مسموح به.</string>
+    <string name="done">تم</string>
+    <string name="save">حفظ</string>
+    <string name="english">الإنجليزية</string>
+    <string name="hindi">الهندية</string>
+    <string name="spanish">الإسبانية</string>
+    <string name="french">الفرنسية</string>
+    <string name="arabic">العربية</string>
+    <string name="bengali">البنغالية</string>
+    <string name="oops_the_diary_is_blank">عذرًا، اليوميات فارغة!</string>
+    <string name="select_date">اختر التاريخ</string>
+</resources>

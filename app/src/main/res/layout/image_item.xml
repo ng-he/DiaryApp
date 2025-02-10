@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageItem"
+        android:layout_width="106dp"
+        android:layout_height="106dp"
+        android:contentDescription="image"
+        android:src="@drawable/ic_launcher_background"
+        android:scaleType="centerCrop">
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/checkedImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_backgrounded_check"
+        android:layout_alignEnd="@id/imageItem"
+        android:padding="4dp"
+        android:visibility="invisible"/>
+</RelativeLayout>

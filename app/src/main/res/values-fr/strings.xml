@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Note</string>
+    <string name="how_about_you_today">Comment ça va aujourd`hui?</string>
+    <string name="language">Langue</string>
+    <string name="feeling">Sentiment</string>
+    <string name="enter_title_here">Entrez le titre ici</string>
+    <string name="enter_text_here">Entrez le texte ici</string>
+    <string name="wait">Attendez!</string>
+    <string name="are_you_sure_you_want_to_delete">Êtes-vous sûr de vouloir supprimer?</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
+    <string name="permission">Autorisation</string>
+    <string name="permission_message">
+        <![CDATA[
+            Veuillez accorder "<b>l`autorisation d`accès aux photos</b>" pour utiliser l`application correctement
+        ]]>
+    </string>
+    <string name="access_photos_permission">Autorisation d`accès aux photos</string>
+    <string name="permission_not_allowed">Autorisation non accordée.</string>
+    <string name="permission_allowed">Autorisation accordée.</string>
+    <string name="done">Terminé</string>
+    <string name="save">Enregistrer</string>
+    <string name="english">Anglais</string>
+    <string name="hindi">Hindi</string>
+    <string name="spanish">Espagnol</string>
+    <string name="french">Français</string>
+    <string name="arabic">Arabe</string>
+    <string name="bengali">Bengali</string>
+    <string name="oops_the_diary_is_blank">Oups, le journal est vide !</string>
+    <string name="select_date">Sélectionner la date</string>
+</resources>
