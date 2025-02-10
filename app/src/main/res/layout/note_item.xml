@@ -32,7 +32,8 @@
                 android:fontFamily="@font/mplusrounded1c"
                 android:textColor="#56302A"
                 android:layout_marginBottom="4dp"
-                android:clipToOutline="true"/>
+                android:clipToOutline="true"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/contentTextView"
@@ -43,7 +44,8 @@
                 android:textSize="14sp"
                 android:fontFamily="@font/mplusrounded1c"
                 android:textColor="#56302A"
-                android:clipToOutline="true"/>
+                android:clipToOutline="true"
+                android:ellipsize="end" />
 
         </LinearLayout>
 
