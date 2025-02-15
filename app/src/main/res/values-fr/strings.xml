@@ -29,4 +29,8 @@
     <string name="bengali">Bengali</string>
     <string name="oops_the_diary_is_blank">Oups, le journal est vide !</string>
     <string name="select_date">Sélectionner la date</string>
+    <string name="delete_note_success">Suppression de la note réussie</string>
+    <string name="fill_title_or_content_at_least">Remplissez au moins le titre ou le contenu</string>
+    <string name="you_added_a_new_note">Vous avez ajouté une nouvelle note</string>
+    <string name="updated_success">Mise à jour réussie</string>
 </resources>

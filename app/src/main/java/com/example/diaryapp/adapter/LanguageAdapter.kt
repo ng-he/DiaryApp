@@ -9,18 +9,16 @@ import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.diaryapp.DiaryApp
-import com.example.diaryapp.Language
+import com.example.diaryapp.utils.Language
 import com.example.diaryapp.R
-import com.example.diaryapp.SharedPrefsManager
-import com.example.diaryapp.setLocale
+import com.example.diaryapp.utils.SharedPrefsManager
 
 class LanguageAdapter(
     private val languages: List<Language>,
-    private val sharedPrefsManager: SharedPrefsManager,
     private val onItemClick: (String) -> Unit = {}
 ) : RecyclerView.Adapter<LanguageAdapter.LanguageViewHolder>() {
 
-    private var selectedLanguage = sharedPrefsManager.getLanguage()
+    private var selectedLanguage = DiaryApp.language
 
     inner class LanguageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flagIcon: ImageView = itemView.findViewById(R.id.flagIcon)
@@ -47,9 +45,7 @@ class LanguageAdapter(
         }
 
         val onItemViewClick = {
-            sharedPrefsManager.saveLanguage(language.code)
             selectedLanguage = language.code
-            DiaryApp.instance.setLocale(language.code)
             onItemClick(language.code)
             notifyDataSetChanged()
         }

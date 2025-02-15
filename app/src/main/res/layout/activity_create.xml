@@ -7,7 +7,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateActivity">
+    tools:context=".ui.create.CreateOrEditActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -66,6 +66,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/noteBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/note_background"
@@ -73,12 +74,15 @@
                 android:paddingVertical="60dp"
                 android:paddingHorizontal="30dp"
                 android:orientation="vertical"
-                android:translationY="-20dp">
+                android:translationY="-20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <EditText
                     android:id="@+id/titleEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="text"
                     android:hint="@string/enter_title_here"
@@ -86,19 +90,24 @@
                     android:textFontWeight="700"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/mplusrounded1c"
-                    android:textColor="#56302A"/>
+                    android:textColor="#56302A"
+                    android:layout_marginTop="8dp">
+
+                </EditText>
 
                 <EditText
                     android:id="@+id/contentEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:ems="10"
-                    android:gravity="start|top"
+                    android:layout_height="wrap_content"
+                    android:minHeight="300dp"
                     android:inputType="textMultiLine"
                     android:hint="@string/enter_text_here"
                     android:textSize="14sp"
+                    android:maxLines="15"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/mplusrounded1c"/>
+                    android:fontFamily="@font/mplusrounded1c"
+                    android:gravity="left"
+                    android:layout_marginTop="8dp"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

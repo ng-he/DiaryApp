@@ -1,20 +1,21 @@
 package com.example.diaryapp.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.ImageView
-import android.widget.RadioButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar.LayoutParams
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.diaryapp.DiaryApp
 import com.example.diaryapp.R
 
 class NoteImageAdapter (
-    private val context: Context,
     private val images: List<String>,
     private val imagesLeftCount: Int = 0,
 ) : RecyclerView.Adapter<NoteImageAdapter.NoteImageViewHolder>() {
@@ -31,27 +32,37 @@ class NoteImageAdapter (
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: NoteImageViewHolder, position: Int) {
-        Glide.with(context)
+        Glide.with(holder.itemView.context)
             .load(images[position])
             .into(holder.imageItemView)
 
-//        if(images.size == 3) {
-//            when(position) {
-//                0, 1 -> {
-//                    holder.imageItemView.layoutParams.width = 32
-//                    holder.imageItemView.layoutParams.height = 32
-//                }
-//
-//                2 -> {
-//                    holder.imageItemView.layoutParams.width = LayoutParams.MATCH_PARENT
-//                    holder.imageItemView.layoutParams.height = LayoutParams.MATCH_PARENT
-//                }
-//            }
-//
-//        } else if(images.size > 3) {
-//            holder.imageItemView.layoutParams.width = 32
-//            holder.imageItemView.layoutParams.height = 32
-//        }
+        when(images.size) {
+            1 -> {
+                holder.itemView.layoutParams.width = LayoutParams.MATCH_PARENT
+                holder.itemView.layoutParams.height = LayoutParams.MATCH_PARENT
+            }
+            2 -> {
+                holder.itemView.layoutParams.width = LayoutParams.MATCH_PARENT
+            }
+            3 -> {
+                when(position) {
+                    0, 1 -> {
+                        holder.itemView.layoutParams.width = (32 * DiaryApp.deviceDensity).toInt()
+                        holder.itemView.layoutParams.height = (32 * DiaryApp.deviceDensity).toInt()
+                    }
+
+                    2 -> {
+                        holder.itemView.layoutParams.height = (32 * DiaryApp.deviceDensity).toInt()
+                    }
+                }
+            }
+
+            else -> {
+                holder.itemView.layoutParams.width = (32 * DiaryApp.deviceDensity).toInt()
+                holder.itemView.layoutParams.height = (32 * DiaryApp.deviceDensity).toInt()
+            }
+        }
+
 
 
         if (position == 3) {

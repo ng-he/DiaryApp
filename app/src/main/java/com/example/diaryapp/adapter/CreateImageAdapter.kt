@@ -5,12 +5,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.diaryapp.EditActivity
+import com.example.diaryapp.ui.detail.DetailActivity
 import com.example.diaryapp.R
 
 class CreateImageAdapter (
@@ -33,7 +32,7 @@ class CreateImageAdapter (
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: CreateImageViewHolder, position: Int) {
         if(imagesUrl.isNotEmpty()) {
-            if(context is EditActivity) {
+            if(context is DetailActivity) {
                 holder.deleteImageButton.visibility = View.INVISIBLE
             }
 

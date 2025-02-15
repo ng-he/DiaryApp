@@ -29,4 +29,8 @@
     <string name="bengali">बंगाली</string>
     <string name="oops_the_diary_is_blank">अरे, डायरी खाली है!</string>
     <string name="select_date">तारीख़ चुनें</string>
+    <string name="delete_note_success">नोट हटाने में सफलता</string>
+    <string name="fill_title_or_content_at_least">कम से कम शीर्षक या सामग्री भरें</string>
+    <string name="you_added_a_new_note">आपने एक नया नोट जोड़ा</string>
+    <string name="updated_success">सफलतापूर्वक अपडेट किया गया</string>
 </resources>

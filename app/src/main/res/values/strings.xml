@@ -28,4 +28,8 @@
     <string name="bengali">Bengali</string>
     <string name="oops_the_diary_is_blank">Oops, the diary is blank!</string>
     <string name="select_date">Select date</string>
+    <string name="delete_note_success">Delete note success</string>
+    <string name="fill_title_or_content_at_least">Fill title or content at least</string>
+    <string name="you_added_a_new_note">You added a new note</string>
+    <string name="updated_success">Updated success</string>
 </resources>

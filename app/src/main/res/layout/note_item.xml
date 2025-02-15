@@ -13,39 +13,40 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lovely day"
-                android:textSize="18sp"
-                android:textFontWeight="700"
-                android:fontFamily="@font/mplusrounded1c"
-                android:textColor="#56302A"
                 android:layout_marginBottom="4dp"
                 android:clipToOutline="true"
-                android:ellipsize="end" />
+                android:ellipsize="end"
+                android:fontFamily="@font/mplusrounded1c"
+                android:maxLines="1"
+                android:text="Lovely day"
+                android:textColor="#56302A"
+                android:textFontWeight="700"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/contentTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lovely day"
-                android:maxLines="2"
-                android:textSize="14sp"
-                android:fontFamily="@font/mplusrounded1c"
-                android:textColor="#56302A"
                 android:clipToOutline="true"
-                android:ellipsize="end" />
+                android:ellipsize="end"
+                android:fontFamily="@font/mplusrounded1c"
+                android:maxLines="2"
+                android:text="Lovely day"
+                android:textColor="#56302A"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -53,18 +54,19 @@
             android:id="@+id/imagesRecyclerView"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:padding="1dp"
-            android:orientation="horizontal"
             android:layout_gravity="end"
+            android:background="@drawable/note_image_background"
+            android:orientation="horizontal"
             android:overScrollMode="never"
-            tools:listitem="@layout/note_image_item"
-            />
+            android:padding="1dp"
+            tools:listitem="@layout/note_image_item" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
 
         <TextView
             android:id="@+id/dateTextView"
