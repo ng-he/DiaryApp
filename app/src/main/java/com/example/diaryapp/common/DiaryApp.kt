@@ -1,8 +1,6 @@
-package com.example.diaryapp
+package com.example.diaryapp.common
 
 import android.app.Application
-import com.example.diaryapp.utils.SharedPrefsManager
-import com.example.diaryapp.utils.setAppLocale
 
 class DiaryApp : Application() {
     companion object {

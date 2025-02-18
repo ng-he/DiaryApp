@@ -5,7 +5,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
 import android.text.Html
 import android.view.View
@@ -20,14 +22,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.Manifest
 import android.os.Handler
 import android.os.Looper
-import com.example.diaryapp.ui.create.CreateOrEditActivity
+import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.diaryapp.ui.image.ImageActivity
 import com.example.diaryapp.R
-import com.example.diaryapp.utils.READ_EXTERNAL_STORAGE_REQUEST_CODE
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.READ_EXTERNAL_STORAGE_REQUEST_CODE
+import com.example.diaryapp.common.readImagesPermission
 
 class PermissionActivity : AppCompatActivity() {
     private lateinit var backBtn: ImageButton
@@ -38,6 +40,7 @@ class PermissionActivity : AppCompatActivity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var permissionSwitch: Switch
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,24 +76,38 @@ class PermissionActivity : AppCompatActivity() {
 
         permissionSwitch.setOnCheckedChangeListener { _, checked ->
             if (checked) {
-                if (!readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
-                    updatePermissionStatus(true) // Permission already granted, update UI
-                } else {
-                    if (readImagesPermission.any { ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
-                        showPermissionRationale() // Chỉ hiển thị dialog nếu đã từng từ chối quyền
-                    } else {
-                        ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
+//                if (!readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
+//                    updatePermissionStatus(true) // Permission already granted, update UI
+//                } else {
+//                    if (readImagesPermission.any { ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
+//                        showPermissionRationale() // Chỉ hiển thị dialog nếu đã từng từ chối quyền
+//                    } else {
+//                        ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
+//                    }
+//                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+                    try {
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                        intent.data = Uri.parse("package:" + applicationContext.packageName)
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                        startActivity(intent)
                     }
                 }
+
+                ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
             } else {
                 updatePermissionStatus(false) // User turned switch off, update UI
-                if(!readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
-                    showRevokeGrantPermissionSettingsDialog()
-                }
+//                if(!readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
+//                    showRevokeGrantPermissionSettingsDialog()
+//                }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -101,17 +118,18 @@ class PermissionActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 updatePermissionStatus(true)
             } else {
-                if (readImagesPermission.any { !ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
-                    showPermissionSettingsDialog()
-                } else {
-                    updatePermissionStatus(false)
-                }
+//                if (readImagesPermission.any { !ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
+//                    showPermissionSettingsDialog()
+//                } else {
+//                    updatePermissionStatus(false)
+//                }
+                updatePermissionStatus(false)
             }
         }
     }
 
     private fun updatePermissionStatus(granted: Boolean) {
-        permissionSwitch.setOnCheckedChangeListener(null)
+//        permissionSwitch.setOnCheckedChangeListener(null)
 
         if (granted) {
             permissionSwitch.isChecked = true
@@ -129,77 +147,85 @@ class PermissionActivity : AppCompatActivity() {
             continueButton.visibility = View.GONE
         }
 
-        permissionSwitch.setOnCheckedChangeListener { _, checked ->
-            if (checked) {
-                ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
-            } else {
-                showRevokeGrantPermissionSettingsDialog()
-            }
-        }
+//        permissionSwitch.setOnCheckedChangeListener { _, checked ->
+//            if (checked) {
+//                ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
+//            } else {
+//                showRevokeGrantPermissionSettingsDialog()
+//            }
+//        }
     }
 
-    private fun showPermissionSettingsDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.permission))
-            .setMessage(Html.fromHtml(getString(R.string.permission_message)))
-            .setPositiveButton("Settings") { _, _ ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-                permissionSwitch.isChecked = false
-            }
-            .show()
-    }
+//    private fun showPermissionSettingsDialog() {
+//        AlertDialog.Builder(this)
+//            .setTitle(getString(R.string.permission))
+//            .setMessage(Html.fromHtml(getString(R.string.permission_message)))
+//            .setPositiveButton("Settings") { _, _ ->
+//                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//                intent.data = Uri.parse("package:$packageName")
+//                startActivity(intent)
+//            }
+//            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+//                permissionSwitch.isChecked = false
+//            }
+//            .show()
+//    }
 
-    private fun showRevokeGrantPermissionSettingsDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.permission))
-            .setMessage("To revoke permission, please go to settings")
-            .setPositiveButton("Settings") { _, _ ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-                permissionSwitch.isChecked = true
-            }
-            .show()
-    }
+//    private fun showRevokeGrantPermissionSettingsDialog() {
+//        AlertDialog.Builder(this)
+//            .setTitle(getString(R.string.permission))
+//            .setMessage("To revoke permission, please go to settings")
+//            .setPositiveButton("Settings") { _, _ ->
+//                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//                intent.data = Uri.parse("package:$packageName")
+//                startActivity(intent)
+//            }
+//            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+//                permissionSwitch.isChecked = true
+//            }
+//            .show()
+//    }
 
-    private fun showPermissionRationale() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.permission))
-            .setMessage(Html.fromHtml(getString(R.string.permission_message)))
-            .setPositiveButton("OK") { _, _ ->
-                ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
-            }
-            .setNegativeButton(getString(R.string.cancel)){ _, _ ->
-                permissionSwitch.isChecked = false
-            }
-            .show()
-    }
+//    private fun showPermissionRationale() {
+//        AlertDialog.Builder(this)
+//            .setTitle(getString(R.string.permission))
+//            .setMessage(Html.fromHtml(getString(R.string.permission_message)))
+//            .setPositiveButton("OK") { _, _ ->
+//                ActivityCompat.requestPermissions(this, readImagesPermission, READ_EXTERNAL_STORAGE_REQUEST_CODE)
+//            }
+//            .setNegativeButton(getString(R.string.cancel)){ _, _ ->
+//                permissionSwitch.isChecked = false
+//            }
+//            .show()
+//    }
 
     override fun onResume() {
         super.onResume()
-        Handler(Looper.getMainLooper()).postDelayed({
-            val isGranted = !readImagesPermission.any {
-                ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+            if (Environment.isExternalStorageManager()) {
+                Log.d("Permission", "MANAGE_EXTERNAL_STORAGE granted")
+            } else {
+                Log.e("Permission", "MANAGE_EXTERNAL_STORAGE denied")
             }
-            updatePermissionStatus(isGranted) // Update UI sau khi đã chắc chắn trạng thái được cập nhật
-        }, 200) // Trì hoãn 200ms
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == READ_EXTERNAL_STORAGE_REQUEST_CODE) {
-            val isGranted = !readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
-            updatePermissionStatus(isGranted)
         }
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            val isGranted = !readImagesPermission.any {
+//                ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+//            }
+//            updatePermissionStatus(isGranted) // Update UI sau khi đã chắc chắn trạng thái được cập nhật
+//        }, 200) // Trì hoãn 200ms
     }
+
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == READ_EXTERNAL_STORAGE_REQUEST_CODE) {
+//            val isGranted = !readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
+//            updatePermissionStatus(isGranted)
+//        }
+//    }
 }

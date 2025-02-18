@@ -1,4 +1,4 @@
-package com.example.diaryapp
+package com.example.diaryapp.common
 
 import com.example.diaryapp.model.Note
 

@@ -1,11 +1,12 @@
-package com.example.diaryapp.utils
+package com.example.diaryapp.common
 
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Bundle
+import android.text.Html
 import androidx.appcompat.app.AlertDialog
-import com.example.diaryapp.model.Note
+import androidx.core.app.ActivityCompat
+import com.example.diaryapp.R
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -16,6 +17,16 @@ fun showUncompletedFunctionAlert(context: Context, functionName: String) {
     val dialog = builder.create()
     dialog.setMessage("Chức năng \"$functionName\" vẫn đang được \"nấu\" – hãy kiên nhẫn một chút, nó sẽ sớm 'chín' thôi")
     dialog.show()
+}
+
+fun showErrorAlert(context: Context, message: String) {
+    AlertDialog.Builder(context)
+        .setTitle("System error: ")
+        .setMessage(message)
+        .setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
 }
 
 fun setAppLocale(languageCode: String, resources: Resources) {

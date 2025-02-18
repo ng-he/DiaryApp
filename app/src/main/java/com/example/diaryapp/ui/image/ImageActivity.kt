@@ -1,30 +1,33 @@
 package com.example.diaryapp.ui.image
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.GridView
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.ui.create.CreateOrEditActivity
 import com.example.diaryapp.R
 import com.example.diaryapp.adapter.ImageAdapter
 import com.example.diaryapp.ui.permission.PermissionActivity
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.readImagesPermission
 
 class ImageActivity : AppCompatActivity() {
     private var selectedImages = DiaryApp.currentAction?.note?.images?.split(",")?.toMutableSet() ?: mutableSetOf()
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,7 @@ class ImageActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun fetchImages(): List<String> {
         val imageList = mutableListOf<String>()
         val projection = arrayOf(
@@ -74,19 +78,22 @@ class ImageActivity : AppCompatActivity() {
             val nameColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
             while (it.moveToNext()) {
+
                 val id = it.getLong(idColumn)
-//                val name = it.getString(nameColumn)
+                val name = it.getString(nameColumn)
 
                 // Create a content URI for the image
                 val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+
                 imageList.add(uri.toString())
-//                println("Image: $name, URI: $uri")
+                println("Image: $name, URI: $uri")
             }
         }
 
         return imageList
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
         if (readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {

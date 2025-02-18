@@ -5,30 +5,35 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.diaryapp.AppAction
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.AppAction
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.ui.imageReview.ImageReviewActivity
 import com.example.diaryapp.R
 import com.example.diaryapp.adapter.CreateImageAdapter
 import com.example.diaryapp.adapter.FeelingAdapter
-import com.example.diaryapp.utils.appDateFormat
+import com.example.diaryapp.common.DatabaseActionState
+import com.example.diaryapp.data.AppDatabase
+import com.example.diaryapp.common.appDateFormat
 import com.example.diaryapp.model.Note
 import com.example.diaryapp.databinding.ActivityCreateBinding
+import com.example.diaryapp.repository.NoteRepository
 import com.example.diaryapp.ui.detail.DetailActivity
-import com.example.diaryapp.utils.feelings
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.feelings
+import com.example.diaryapp.common.readImagesPermission
+import com.example.diaryapp.common.showErrorAlert
 import com.example.diaryapp.ui.home.HomeActivity
 import com.example.diaryapp.ui.image.ImageActivity
 import com.example.diaryapp.ui.permission.PermissionActivity
@@ -38,7 +43,7 @@ import java.util.*
 
 class CreateOrEditActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityCreateBinding
-    private lateinit var mUserViewModel: NoteViewModel
+    private lateinit var mNoteViewModel: NoteViewModel
 
     private val note: Note = DiaryApp.currentAction?.note ?: Note()
     private var selectedImages = if (note.images != null) {
@@ -47,6 +52,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         mutableSetOf()
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +65,7 @@ class CreateOrEditActivity : AppCompatActivity() {
             insets
         }
 
-        mUserViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        mNoteViewModel = NoteViewModel(application, NoteRepository(AppDatabase.getDatabase(application).noteDao()))
 
         initViews()
         initEvents()
@@ -95,14 +101,8 @@ class CreateOrEditActivity : AppCompatActivity() {
         viewBinding.dateTextView.text = appDateFormat.format(note.date)
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun initEvents() {
-//        viewBinding.noteBackground.setOnClickListener {
-//            this.currentFocus?.let { view ->
-//                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-//                imm?.hideSoftInputFromWindow(view.windowToken, 0)
-//            }
-//        }
-
         viewBinding.backButton.setOnClickListener {
             val intent = if(DiaryApp.currentAction is AppAction.Edit) {
                 Intent(this, DetailActivity::class.java)
@@ -116,14 +116,12 @@ class CreateOrEditActivity : AppCompatActivity() {
         }
 
         viewBinding.imageLibraryButton.setOnClickListener {
-            val intent = if (readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
-                Intent(this, PermissionActivity::class.java)
-            } else {
-                Intent(this, ImageActivity::class.java)
-            }
-
             saveUserInput()
-            startActivity(intent)
+            if (readImagesPermission.any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
+                startActivity(Intent(this, PermissionActivity::class.java))
+            } else {
+                startActivity(Intent(this, ImageActivity::class.java))
+            }
         }
 
         viewBinding.date.setOnClickListener {
@@ -148,34 +146,48 @@ class CreateOrEditActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            try {
-                val intent: Intent = when(DiaryApp.currentAction) {
-                    is AppAction.Create -> {
-                        mUserViewModel.insertNote(note)
-                        Toast.makeText(this, getString(R.string.you_added_a_new_note), Toast.LENGTH_LONG).show()
-                        DiaryApp.currentAction = null
-                        Intent(this, HomeActivity::class.java)
-                    }
 
-                    is AppAction.Edit ->  {
-                        mUserViewModel.updateNote(note)
-                        Toast.makeText(this, getString(R.string.updated_success), Toast.LENGTH_LONG).show()
-                        DiaryApp.currentAction = AppAction.Detail(note)
-                        Intent(this, DetailActivity::class.java)
-                    }
+            when(DiaryApp.currentAction) {
+                is AppAction.Create -> {
+                    mNoteViewModel.insertNote(note) { state ->
+                        when(state) {
+                            is DatabaseActionState.Error -> {
+                                showErrorAlert(this, state.ex.message ?: "")
+                            }
 
-                    else -> {
-                        Toast.makeText(this, "System error: Invalid app action (${DiaryApp.currentAction})", Toast.LENGTH_LONG).show()
-                        DiaryApp.currentAction = null
-                        Intent(this, HomeActivity::class.java)
+                            DatabaseActionState.Success -> {
+                                Toast.makeText(this, getString(R.string.you_added_a_new_note), Toast.LENGTH_LONG).show()
+                                DiaryApp.currentAction = null
+                                startActivity(Intent(this, HomeActivity::class.java))
+                            }
+                        }
                     }
                 }
 
-                startActivity(intent)
-                finish()
-            } catch (ex: Exception) {
-                Toast.makeText(this, ex.message, Toast.LENGTH_LONG).show()
+                is AppAction.Edit ->  {
+                    mNoteViewModel.updateNote(note) { state ->
+                        when(state) {
+                            is DatabaseActionState.Error -> {
+                                showErrorAlert(this, state.ex.message ?: "")
+                            }
+
+                            DatabaseActionState.Success -> {
+                                Toast.makeText(this, getString(R.string.updated_success), Toast.LENGTH_LONG).show()
+                                DiaryApp.currentAction = AppAction.Detail(note)
+                                startActivity(Intent(this, DetailActivity::class.java))
+                            }
+                        }
+                    }
+                }
+
+                else -> {
+                    Toast.makeText(this, "System error: Invalid app action (${DiaryApp.currentAction})", Toast.LENGTH_LONG).show()
+                    DiaryApp.currentAction = null
+                    startActivity(Intent(this, HomeActivity::class.java))
+                }
             }
+
+            finish()
         }
     }
 
@@ -185,6 +197,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         note.images = if(selectedImages.isNotEmpty()) selectedImages.joinToString(",") else null
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
         if(note.images != null) {
@@ -212,17 +225,6 @@ class CreateOrEditActivity : AppCompatActivity() {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val focusedView = currentFocus
             val outRect = Rect()
-
-//            if (focusedView is EditText) {
-//                focusedView.getGlobalVisibleRect(outRect)
-//
-//                // Nếu bấm ra ngoài EditText (và không phải là EditText khác)
-//                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-//                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-//                    focusedView.clearFocus()
-//                }
-//            }
 
             if(focusedView !is EditText && !outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

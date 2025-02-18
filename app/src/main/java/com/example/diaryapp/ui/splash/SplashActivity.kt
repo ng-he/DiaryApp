@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.diaryapp.ui.home.HomeActivity
 import com.example.diaryapp.ui.language.LanguageActivity
 import com.example.diaryapp.R
-import com.example.diaryapp.utils.SharedPrefsManager
-import com.example.diaryapp.utils.setAppLocale
+import com.example.diaryapp.common.SharedPrefsManager
+import com.example.diaryapp.common.setAppLocale
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {

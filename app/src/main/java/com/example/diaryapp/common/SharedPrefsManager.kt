@@ -1,4 +1,4 @@
-package com.example.diaryapp.utils
+package com.example.diaryapp.common
 
 import android.content.Context
 import android.content.SharedPreferences

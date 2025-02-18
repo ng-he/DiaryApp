@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.diaryapp.R // Replace with your actual package name
 import com.example.diaryapp.model.Note
-import com.example.diaryapp.utils.appDateFormat
-import com.example.diaryapp.utils.feelings
+import com.example.diaryapp.common.appDateFormat
+import com.example.diaryapp.common.feelings
 
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     private var notes: List<Note> = emptyList()

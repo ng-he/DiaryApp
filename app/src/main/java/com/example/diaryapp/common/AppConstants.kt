@@ -1,9 +1,10 @@
-package com.example.diaryapp.utils
+package com.example.diaryapp.common
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import com.example.diaryapp.R
 import java.text.DateFormat
@@ -39,8 +40,20 @@ val feelings = listOf(
 
 const val READ_EXTERNAL_STORAGE_REQUEST_CODE = 101
 
-val readImagesPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    arrayOf(Manifest.permission.READ_MEDIA_IMAGES/*, Manifest.permission.MANAGE_EXTERNAL_STORAGE*/)
-} else {
-    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//val readImagesPermission = when {
+//    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+//        arrayOf(Manifest.permission.ACCESS_MEDIA_LOCATION, Manifest.permission.READ_MEDIA_IMAGES)
+//    }
+//    else -> { // Android 12 trở xuống
+//        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//    }
+//}
+
+val readImagesPermission = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    }
+    else -> { // Android 9 trở xuống
+        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 }

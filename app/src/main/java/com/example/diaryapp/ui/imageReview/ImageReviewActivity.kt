@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -17,8 +16,8 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.example.diaryapp.AppAction
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.AppAction
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.R
 import com.example.diaryapp.adapter.ItemImageReviewAdapter
 import com.example.diaryapp.adapter.MainImageReviewAdapter
@@ -27,7 +26,7 @@ import com.example.diaryapp.dialog.DeleteDialog
 import com.example.diaryapp.ui.create.CreateOrEditActivity
 import com.example.diaryapp.ui.detail.DetailActivity
 import com.example.diaryapp.ui.permission.PermissionActivity
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.readImagesPermission
 
 class ImageReviewActivity : AppCompatActivity() {
     private val selectedPosition = MutableLiveData<Int>()
@@ -125,26 +124,27 @@ class ImageReviewActivity : AppCompatActivity() {
 
     @SuppressLint("ResourceAsColor", "NotifyDataSetChanged")
     private fun showDeleteDialog() {
-        val deleteDialog = DeleteDialog(
-            context = this,
-            builder = AlertDialog.Builder(this, R.style.CustomDialogTheme),
-            onCancel = { dialog -> dialog.dismiss() },
-            onDelete = { dialog ->
-                imagesUrl.removeAt(selectedPosition.value!!)
-                if(imagesUrl.size == 0) {
-                    dialog.dismiss()
-                    DiaryApp.currentAction?.note?.images = null
-                    finish()
-                } else {
-                    if(selectedPosition.value!! > 0) {
-                        selectedPosition.value = selectedPosition.value!! - 1
-                    }
-                    viewBinding.imagesRecyclerView.adapter!!.notifyDataSetChanged()
-                    viewBinding.mainImageRecycleView.adapter!!.notifyDataSetChanged()
-                    dialog.dismiss()
+        val deleteDialog = DeleteDialog(this@ImageReviewActivity)
+
+        deleteDialog.setOnCancelClickListener {
+            deleteDialog.dismiss()
+        }
+
+        deleteDialog.setOnDeleteClickListener {
+            imagesUrl.removeAt(selectedPosition.value!!)
+            if(imagesUrl.size == 0) {
+                deleteDialog.dismiss()
+                DiaryApp.currentAction?.note?.images = null
+                finish()
+            } else {
+                if(selectedPosition.value!! > 0) {
+                    selectedPosition.value = selectedPosition.value!! - 1
                 }
+                viewBinding.imagesRecyclerView.adapter!!.notifyDataSetChanged()
+                viewBinding.mainImageRecycleView.adapter!!.notifyDataSetChanged()
+                deleteDialog.dismiss()
             }
-        )
+        }
 
         deleteDialog.show()
     }

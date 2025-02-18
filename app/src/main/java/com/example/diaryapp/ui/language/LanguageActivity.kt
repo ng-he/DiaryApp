@@ -10,12 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.ui.home.HomeActivity
 import com.example.diaryapp.R
-import com.example.diaryapp.utils.SharedPrefsManager
-import com.example.diaryapp.utils.languages
-import com.example.diaryapp.utils.setAppLocale
+import com.example.diaryapp.common.SharedPrefsManager
+import com.example.diaryapp.common.languages
+import com.example.diaryapp.common.setAppLocale
 
 class LanguageActivity : AppCompatActivity() {
     private lateinit var selectedLanguage: String

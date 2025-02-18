@@ -11,31 +11,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.diaryapp.AppAction
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.AppAction
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.R
 import com.example.diaryapp.adapter.NoteAdapter
+import com.example.diaryapp.data.AppDatabase
 import com.example.diaryapp.databinding.ActivityMainBinding
 import com.example.diaryapp.model.Note
+import com.example.diaryapp.repository.NoteRepository
 import com.example.diaryapp.ui.create.CreateOrEditActivity
 import com.example.diaryapp.ui.detail.DetailActivity
 import com.example.diaryapp.ui.language.LanguageActivity
 import com.example.diaryapp.ui.permission.PermissionActivity
-import com.example.diaryapp.utils.SharedPrefsManager
-import com.example.diaryapp.utils.languages
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.languages
+import com.example.diaryapp.common.readImagesPermission
 import com.example.diaryapp.viewModel.NoteViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var mNoteViewModel: NoteViewModel
 
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +43,8 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        mNoteViewModel = NoteViewModel(application, NoteRepository(AppDatabase.getDatabase(application).noteDao()))
 
         initViews()
         initEvents()
@@ -65,7 +63,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
         try {
-            mNoteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
             mNoteViewModel.readAllNotes.observe(this) { notes ->
                 viewBinding.emptyAlert.visibility = if(notes.isEmpty()) { View.VISIBLE } else { View.INVISIBLE }
                 noteAdapter.setData(notes)
@@ -101,12 +98,5 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.",
-        ReplaceWith("super.onBackPressed()", "androidx.appcompat.app.AppCompatActivity")
-    )
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 }

@@ -8,10 +8,9 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.diaryapp.DiaryApp
-import com.example.diaryapp.utils.Language
+import com.example.diaryapp.common.DiaryApp
+import com.example.diaryapp.common.Language
 import com.example.diaryapp.R
-import com.example.diaryapp.utils.SharedPrefsManager
 
 class LanguageAdapter(
     private val languages: List<Language>,

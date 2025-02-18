@@ -7,34 +7,35 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.diaryapp.AppAction
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.AppAction
+import com.example.diaryapp.common.DiaryApp
 import com.example.diaryapp.ui.imageReview.ImageReviewActivity
 import com.example.diaryapp.R
 import com.example.diaryapp.adapter.CreateImageAdapter
-import com.example.diaryapp.utils.appDateFormat
+import com.example.diaryapp.common.DatabaseActionState
+import com.example.diaryapp.data.AppDatabase
+import com.example.diaryapp.common.appDateFormat
 import com.example.diaryapp.model.Note
 import com.example.diaryapp.databinding.ActivityDetailBinding
 import com.example.diaryapp.dialog.DeleteDialog
-import com.example.diaryapp.utils.feelings
+import com.example.diaryapp.repository.NoteRepository
+import com.example.diaryapp.common.feelings
 import com.example.diaryapp.ui.create.CreateOrEditActivity
 import com.example.diaryapp.ui.home.HomeActivity
 import com.example.diaryapp.ui.permission.PermissionActivity
-import com.example.diaryapp.utils.readImagesPermission
+import com.example.diaryapp.common.readImagesPermission
+import com.example.diaryapp.common.showErrorAlert
 import com.example.diaryapp.viewModel.NoteViewModel
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityDetailBinding
     private val note = DiaryApp.currentAction?.note ?: Note()
-    private var selectedImages = if (note.images != null) {
+    private var selectedImages: MutableSet<String> = if (note.images != null) {
         note.images!!.split(",").toMutableSet()
     } else {
         mutableSetOf()
@@ -53,7 +54,7 @@ class DetailActivity : AppCompatActivity() {
             insets
         }
 
-        mNoteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        mNoteViewModel = NoteViewModel(application, NoteRepository(AppDatabase.getDatabase(application).noteDao()))
 
         initViews()
         initEvents()
@@ -122,22 +123,28 @@ class DetailActivity : AppCompatActivity() {
 
     @SuppressLint("ResourceAsColor")
     private fun showDeleteDialog() {
-        val deleteDialog = DeleteDialog(
-            context = this@DetailActivity,
-            builder = AlertDialog.Builder(this, R.style.CustomDialogTheme),
-            onCancel = { dialog -> dialog.dismiss() },
-            onDelete = { dialog ->
-                try {
-                    mNoteViewModel.deleteNote(note)
-                    dialog.dismiss()
-                    Toast.makeText(this@DetailActivity, getString(R.string.delete_note_success), Toast.LENGTH_LONG).show()
-                    DiaryApp.currentAction = null
-                    finish()
-                } catch (ex: Exception) {
-                    Toast.makeText(this@DetailActivity, ex.message, Toast.LENGTH_LONG).show()
+        val deleteDialog = DeleteDialog(this@DetailActivity)
+
+        deleteDialog.setOnCancelClickListener {
+            deleteDialog.dismiss()
+        }
+
+        deleteDialog.setOnDeleteClickListener {
+            mNoteViewModel.deleteNote(note) { state ->
+                when(state) {
+                    is DatabaseActionState.Error -> {
+                        showErrorAlert(this, state.ex.message ?: "")
+                    }
+
+                    DatabaseActionState.Success -> {
+                        deleteDialog.dismiss()
+                        Toast.makeText(this@DetailActivity, getString(R.string.delete_note_success), Toast.LENGTH_LONG).show()
+                        DiaryApp.currentAction = null
+                        finish()
+                    }
                 }
             }
-        )
+        }
 
         deleteDialog.show()
     }

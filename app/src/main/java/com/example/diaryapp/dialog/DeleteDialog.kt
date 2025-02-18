@@ -1,37 +1,42 @@
 package com.example.diaryapp.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.example.diaryapp.R
-import com.example.diaryapp.DiaryApp
+import com.example.diaryapp.common.DiaryApp
 
-class DeleteDialog(
-    context: Context,
-    builder: AlertDialog.Builder,
-    private val onCancel: (AlertDialog) -> Unit = {},
-    private val onDelete: (AlertDialog) -> Unit = {}
-) {
-    private var dialog: AlertDialog
+@SuppressLint("InflateParams")
+class DeleteDialog(context: Context) : AlertDialog(context, R.style.CustomDialogTheme) {
+    private var cancelButton: Button
+    private var deleteButton: Button
 
     init {
         val inflater = LayoutInflater.from(context)
         val dialogView = inflater.inflate(R.layout.delete_dialog, null)
 
-        builder.setView(dialogView)
-        dialog = builder.create()
-        val cancelButton: Button = dialogView.findViewById(R.id.cancelButton)
-        val deleteButton: Button = dialogView.findViewById(R.id.deleteConfirmButton)
+        setView(dialogView)
+        create()
 
-        cancelButton.setOnClickListener { onCancel(dialog) }
-        deleteButton.setOnClickListener { onDelete(dialog) }
+        cancelButton = dialogView.findViewById(R.id.cancelButton)
+        deleteButton = dialogView.findViewById(R.id.deleteConfirmButton)
     }
 
-    fun show() {
-        dialog.show()
-        dialog.window?.setLayout(
+    fun setOnCancelClickListener(l: View.OnClickListener) {
+        cancelButton.setOnClickListener(l)
+    }
+
+    fun setOnDeleteClickListener(l: View.OnClickListener) {
+        deleteButton.setOnClickListener(l)
+    }
+
+    override fun show() {
+        super.show()
+        window?.setLayout(
             (300 * DiaryApp.deviceDensity).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
